@@ -94,9 +94,12 @@ class TopLevelCommand:
             return
 
         bcolors.printColor('OKGREEN', 'Start installing libraries')
-        bcolors.printColor('OKCYAN', 'Creating virtualenv')
-        os.system("virtualenv --python=python3 pip_modules")
+        if not os.path.exists('pip_modules/'): self.__create_virtualenv()
         bcolors.printColor('OKCYAN', 'Start installing libraries')
+        if not os.path.exists('requirements.txt'):
+            bcolors.printColor('FAIL', 'missing requirements.txt')
+            bcolors.printColor('UNDERLINE', 'YOU could run this command')
+            bcolors.printColor('OKBLUE', '  $ mpip init')
         os.system("./pip_modules/bin/pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
 
@@ -109,12 +112,23 @@ class TopLevelCommand:
 
         By default, creates the virtualenv in pip_modules dir on the proyect
         and a requirements.txt without any line on the requirements file
+
+        usage: init
         '''
         bcolors.printColor('OKGREEN', 'Initializing mpip')
+        if not os.path.exists("pip_modules/"):
+            self.__create_virtualenv()
+        if not os.path.exists('requirements.txt'):
+            bcolors.printColor('OKCYAN', 'Creating requirements.txt')
+            open("requirements.txt", "w").close()
+        bcolors.printColor('OKGREEN', 'Finish init')
+
+    def __create_virtualenv(self):
+        '''
+        Function dedicated to create a new virtual env with the name
+        '''
         bcolors.printColor('OKCYAN', 'Creating virtualenv')
         os.system("virtualenv --python=python3 pip_modules")
-        bcolors.printColor('OKCYAN', 'Creating requirements.txt')
-
 
 
     @classmethod
