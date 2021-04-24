@@ -1,0 +1,11 @@
+*.DS_Store
+.vscode/
+
+build/
+*.egg-info/
+modules/
+dist/
+__pycache__/
+
+
+reload.sh
