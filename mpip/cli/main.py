@@ -60,7 +60,7 @@ def perform_command(options, handler, command_options):
 
 
 class TopLevelCommand:
-    '''Mpip pluging for pip for better handling your libraries
+    '''Install and handle your pip dependencies fast and easy
 
     usage:
         mpip [options] [--] [COMMAND] [ARGS...]
@@ -99,6 +99,22 @@ class TopLevelCommand:
         bcolors.printColor('OKCYAN', 'Start installing libraries')
         os.system("./pip_modules/bin/pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
+
+    def init(self, options=None):
+        '''
+        Init the mpip environment
+
+        For example:
+            $ mpip init
+
+        By default, creates the virtualenv in pip_modules dir on the proyect
+        and a requirements.txt without any line on the requirements file
+        '''
+        bcolors.printColor('OKGREEN', 'Initializing mpip')
+        bcolors.printColor('OKCYAN', 'Creating virtualenv')
+        os.system("virtualenv --python=python3 pip_modules")
+        bcolors.printColor('OKCYAN', 'Creating requirements.txt')
+
 
 
     @classmethod
