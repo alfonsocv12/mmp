@@ -4,6 +4,7 @@
 build/
 *.egg-info/
 modules/
+pip_modules/
 dist/
 __pycache__/
 

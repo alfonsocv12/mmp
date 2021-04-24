@@ -25,9 +25,18 @@ def main():
     except (KeyboardInterrupt, signals.ShutdownException):
         print("Aborting.")
         sys.exit(1)
+    except NoSuchCommand as e:
+        pass_to_lib()
     except Exception as e:
         print(str(e))
 
+def pass_to_lib():
+    '''
+    Function dedicated to pass commands to the virtualenviroment
+    '''
+    lib_command: str = ' '.join(sys.argv[1:])
+    os.system(f'pip_modules/bin/{lib_command}')
+    return
 
 def dispatch():
     dispatcher = DocoptDispatcher(
@@ -75,14 +84,15 @@ class TopLevelCommand:
         '''
         Install commands installs all your libraries on a pip_modules forder
 
-        Usage: install [options]
+        Usage: install [options] [COMMAND]
         '''
-        if options:
+        if options.get('COMMAND', None):
             print(options)
             bcolors.printColor(
                 'WARNING', 'We will build a package installer on the future'
             )
             return
+
         bcolors.printColor('OKGREEN', 'Start installing libraries')
         bcolors.printColor('OKCYAN', 'Creating virtualenv')
         os.system("virtualenv --python=python3 pip_modules")
