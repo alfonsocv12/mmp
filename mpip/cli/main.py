@@ -87,13 +87,10 @@ class TopLevelCommand:
         Usage: install [options] [COMMAND]
         '''
         if options.get('COMMAND', None):
-            print(options)
-            bcolors.printColor(
-                'WARNING', 'We will build a package installer on the future'
-            )
+            self.__install_specifict_lib(options.get('COMMAND'))
             return
 
-        bcolors.printColor('OKGREEN', 'Start install')
+        bcolors.printColor('HEADER', 'Start install')
         if not os.path.exists('pip_modules/'): self.__create_virtualenv()
         print('Running pip install')
         if not os.path.exists('requirements.txt'):
@@ -116,21 +113,61 @@ class TopLevelCommand:
 
         usage: init
         '''
-        bcolors.printColor('OKGREEN', 'Initializing mpip')
+        bcolors.printColor('HEADER', 'Initializing mpip')
         if not os.path.exists("pip_modules/"):
             self.__create_virtualenv()
         if not os.path.exists('requirements.txt'):
-            bcolors.printColor('OKCYAN', 'Creating requirements.txt')
-            open("requirements.txt", "w").close()
+            print('Creating requirements.txt')
+            open('requirements.txt', 'w').close()
         bcolors.printColor('OKGREEN', 'Finish init')
 
     def __create_virtualenv(self):
         '''
         Function dedicated to create a new virtual env with the name
         '''
-        bcolors.printColor('OKCYAN', 'Creating virtualenv')
-        os.system("virtualenv --python=python3 pip_modules")
+        print('Creating virtualenv')
+        os.system('virtualenv --python=python3 pip_modules')
 
+    def __install_specifict_lib(self, command: str):
+        '''
+        Here we pass a install command to pip to install a librari into our
+        pip_modules and adding it into our requirements.txt
+
+        param: options (dict)
+        '''
+        lib: dict = {
+            'name': command.split('=')[0],
+        }
+        if self.__check_lib_installed(lib['name']):
+            bcolors.printColor('WARNING', f'{lib["name"]} allready satisfied')
+            return
+        os.system(f'pip_modules/bin/pip install {command}')
+        show_result = os.popen(f'pip_modules/bin/pip show {lib["name"]}').read()
+        lib['version'] = show_result.splitlines()[1].split(':')[1].strip('')
+        self.__update_requirements(lib)
+
+    def __update_requirements(self, lib: dict):
+        '''
+        Function dedicated to update requirements.txt with the new lib
+        '''
+        requirements = open('requirements.txt', 'r+')
+        requirements_read: list = requirements.readlines()
+        requirements_read.append(
+            f'{lib["name"]}=={lib["version"]}\n'
+        )
+        requirements_write = ''.join(sorted(requirements_read))
+        requirements.seek(0)
+        requirements.write(requirements_write)
+        requirements.close()
+
+    def __check_lib_installed(self, lib_name: str):
+        '''
+        Function dedicated to check if lib allready in pip_modules
+        '''
+        response: str = os.popen(f'pip_modules/bin/pip show {lib_name}').read()
+        if 'Name' in response.splitlines()[0]:
+            return True
+        return
 
     @classmethod
     def help(cls, options):
