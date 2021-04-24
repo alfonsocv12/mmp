@@ -11,4 +11,4 @@ class bcolors:
 
     @classmethod
     def printColor(cls, type, message):
-        print(getattr(cls, type)+message+bcolors.ENDC)
+        print(f'{getattr(cls, type)}{message}{bcolors.ENDC}')

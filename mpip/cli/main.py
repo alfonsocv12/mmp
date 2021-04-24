@@ -93,13 +93,14 @@ class TopLevelCommand:
             )
             return
 
-        bcolors.printColor('OKGREEN', 'Start installing libraries')
+        bcolors.printColor('OKGREEN', 'Start install')
         if not os.path.exists('pip_modules/'): self.__create_virtualenv()
-        bcolors.printColor('OKCYAN', 'Start installing libraries')
+        print('Running pip install')
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'missing requirements.txt')
-            bcolors.printColor('UNDERLINE', 'YOU could run this command')
-            bcolors.printColor('OKBLUE', '  $ mpip init')
+            print('\nSUGGESTION: This command could help')
+            print('  $ mpip init')
+            return
         os.system("./pip_modules/bin/pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
 
