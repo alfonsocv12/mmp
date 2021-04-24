@@ -58,12 +58,11 @@ class TopLevelCommand:
         mpip -h|--help
 
     Options:
-        -v, --version           Print version and exit
+        -v, --version            Shows mpip version
 
     Commands:
-        run                      Lets you run a specific query
-        load-query               Load querys to db
-        query                    List all queerys loaded
+        install                  Install your libraries on pip_modules
+        init                     Create requirements.txt to to add python libraries
     '''
 
     def __init__(self, options=None):
@@ -71,6 +70,25 @@ class TopLevelCommand:
         Constructor function
         '''
         self.toplevel_options = options or {}
+
+    def install(self, options=None):
+        '''
+        Install commands installs all your libraries on a pip_modules forder
+
+        Usage: install [options]
+        '''
+        if options:
+            print(options)
+            bcolors.printColor(
+                'WARNING', 'We will build a package installer on the future'
+            )
+            return
+        bcolors.printColor('OKGREEN', 'Start installing libraries')
+        bcolors.printColor('OKCYAN', 'Creating virtualenv')
+        os.system("virtualenv --python=python3 pip_modules")
+        bcolors.printColor('OKCYAN', 'Start installing libraries')
+        os.system("./pip_modules/bin/pip install -r requirements.txt")
+        bcolors.printColor('OKGREEN', 'Finish installation')
 
 
     @classmethod
