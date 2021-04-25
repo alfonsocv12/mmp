@@ -219,8 +219,9 @@ class TopLevelCommand:
         lib: dict = {
             'name': command.rstrip('\x00').split('=')[0],
         }
-        if self.__check_lib_installed(lib['name']):
-            bcolors.printColor('WARNING', f'{lib["name"]} allready satisfied')
+        v_installed = self.__check_lib_installed(lib['name'])
+        if v_installed:
+            bcolors.printColor('WARNING', f'{v_installed} allready satisfied')
             return
         os.system(f'pip_modules/bin/pip install {command}')
         show_result = os.popen(f'pip_modules/bin/pip show {lib["name"]}').read()
@@ -251,14 +252,22 @@ class TopLevelCommand:
         '''
         Function dedicated to check if lib allready in pip_modules
         '''
-        response = os.popen('pip_modules/bin/python -c "try:\n'
-            f' import {lib_name}\n print(True)\n'
-            'except Exception as e:\n print(False)\n\n"'
+        response = os.popen(
+            'pip_modules/bin/python -c "from pip._internal.commands.show import search_packages_info\n'
+            'exist = False\n'
+            f'for i, dist in enumerate(search_packages_info([\'{lib_name}\'])):\n'
+            ' exist = True\n'
+            ' name = dist.get(\'name\', False)\n'
+            ' version = dist.get(\'version\', False)\n\n'
+            'if exist:\n'
+            ' print(f\'{name}, {version}\')\n\n'
+            'else:'
+            ' print(\'False\')"'
         )
-        response_str: str = response.read()
-        if 'True' in response_str.strip(''):
-            return True
-        return
+        response_str: str = response.read().strip('')
+        if 'False' in response_str:
+            return
+        return response_str.rstrip('\n')
 
     @classmethod
     def help(cls, options):
