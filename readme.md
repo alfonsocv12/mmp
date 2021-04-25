@@ -4,7 +4,7 @@
   </a>
   <p align="center">
     <span style="
-      font-size: 6rem;
+      font-size: xxx-large;
       font-weight: 200;
     ">mmp</span>
   </p>
