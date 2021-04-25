@@ -73,6 +73,7 @@ class TopLevelCommand:
     Commands:
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
+        upgrade                  Upgrade module on the pip_modules
         uninstall                remove libraries from pip_modules
         clean                    Clean all the libraries and reinstall requirements
     '''
@@ -150,6 +151,18 @@ class TopLevelCommand:
         os.system('rm -rf pip_modules')
         self.__check_virtual_env()
         os.system('pip_modules/bin/pip install -r requirements.txt')
+
+    def upgrade(self, options=None):
+        '''
+        Upgrade specific module on the pip_modules
+
+        usage: upgrade [COMMAND]
+        '''
+        if not options.get('COMMAND', None):
+            bcolors.printColor('FAIL', 'Missing module to upgrade')
+            return
+        module_name = options.get('COMMAND')
+        os.system(f'pip_modules/bin/pip install --upgrade {module_name}')
 
     def __uninstall_pip_module(self, module_name: str):
         '''
