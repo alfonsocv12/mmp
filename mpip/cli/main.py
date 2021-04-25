@@ -1,5 +1,6 @@
 import functools
 import json
+import re
 import os
 import logging
 import sys
@@ -73,6 +74,7 @@ class TopLevelCommand:
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
         uninstall                remove libraries from pip_modules
+        clean                    Clean all the libraries and reinstall requirements
     '''
 
     def __init__(self, options=None):
@@ -128,11 +130,37 @@ class TopLevelCommand:
 
         usage: uninstall [COMMAND]
         '''
-        if not options.get('COMMAND' None):
-            bcolor.printColor('FAIL', 'You need to send the module name')
+        if not options.get('COMMAND', None):
+            bcolors.printColor('FAIL', 'You need to send the module name')
             return
-        bcolor.printColor('WARNING', 'Working on this feature')
+        self.__uninstall_pip_module(options.get('COMMAND'))
 
+    def clean(self, options=None):
+        '''
+        Clean all the libraries and reinstall the requirements.txt
+
+        usage: clean
+        '''
+        if not os.path.exists('pip_modules'):
+            bcolors.printColor('FAIL', 'No pip_modules')
+            return
+        if not os.path.exists('requirements.txt'):
+            bcolors.printColor('FAIL', 'No requirements.txt')
+            return
+        os.system('rm -rf pip_modules')
+        self.__check_virtual_env()
+        os.system('pip_modules/bin/pip install -r requirements.txt')
+
+    def __uninstall_pip_module(self, module_name: str):
+        '''
+        This function deletes the module from pip_modules and remove it from
+        requirements
+        '''
+        if not os.path.exists("pip_modules/"):
+            bcolors.printColor('FAIL', 'Can\'t remove module')
+            return
+        os.system(f'pip_modules/bin/pip uninstall {module_name}')
+        self.__update_requirements(module_name, remove=True)
 
     def __check_virtual_env(self):
         '''
@@ -167,20 +195,26 @@ class TopLevelCommand:
             return
         os.system(f'pip_modules/bin/pip install {command}')
         show_result = os.popen(f'pip_modules/bin/pip show {lib["name"]}').read()
-        lib['version'] = show_result.splitlines()[1].split(':')[1].strip('')
-        self.__update_requirements(lib)
+        lib['version'] = show_result.splitlines()[1].split(':')[1].strip(' ')
+        self.__update_requirements(lib['name'], lib['version'])
 
-    def __update_requirements(self, lib: dict):
+    def __update_requirements(self, name: str, version=None, remove=False):
         '''
         Function dedicated to update requirements.txt with the new lib
         '''
         requirements = open('requirements.txt', 'r+')
         requirements_read: list = requirements.readlines()
-        requirements_read.append(
-            f'{lib["name"]}=={lib["version"]}\n'
-        )
+        if remove:
+            for i, s in enumerate(requirements_read):
+                if name in s:
+                    del requirements_read[i]
+        else:
+            if not name in requirements_read:
+                requirements_read.append(
+                    f'{name}=={version}\n'
+                )
         requirements_write = ''.join(sorted(requirements_read))
-        requirements.seek(0)
+        requirements.truncate(0)
         requirements.write(requirements_write)
         requirements.close()
 
