@@ -72,6 +72,7 @@ class TopLevelCommand:
     Commands:
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
+        uninstall                remove libraries from pip_modules
     '''
 
     def __init__(self, options=None):
@@ -117,6 +118,21 @@ class TopLevelCommand:
         self.__check_virtual_env()
         self.__check_requirements()
         bcolors.printColor('OKGREEN', 'Finish init')
+
+    def uninstall(self, options=None):
+        '''
+        Uninstall a lib from the pip_modules
+
+        For example:
+            $ mpip uninstall mpip
+
+        usage: uninstall [COMMAND]
+        '''
+        if not options.get('COMMAND' None):
+            bcolor.printColor('FAIL', 'You need to send the module name')
+            return
+        bcolor.printColor('WARNING', 'Working on this feature')
+
 
     def __check_virtual_env(self):
         '''
