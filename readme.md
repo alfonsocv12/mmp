@@ -21,9 +21,9 @@ with your projects.
 
 ---
 
-### [Documentation](https://mmp-y.com)
-
-### [Source code](https://github.com/alfonsocv12/mmp)
+### Documentation [page](https://mmp-y.com)
+### Update docs [here](https://github.com/alfonsocv12/mmpDocs)
+### Source code [git repo](https://github.com/alfonsocv12/mmp)
 
 ---
 
