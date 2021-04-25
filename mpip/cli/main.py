@@ -172,11 +172,12 @@ class TopLevelCommand:
         '''
         Function dedicated to check if lib allready in pip_modules
         '''
-        response = os.popen(
-            'pip_modules/bin/python -c "import sys\n'
-            'print(\'{lib_name}\' in sys.modules)"'
+        response = os.popen('pip_modules/bin/python -c "try:\n'
+            f' import {lib_name}\n print(True)\n'
+            'except Exception as e:\n print(False)\n\n"'
         )
-        if 'True' in response.read().strip():
+        response_str: str = response.read()
+        if 'True' in response_str.strip(''):
             return True
         return
 
