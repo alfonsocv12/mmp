@@ -2,6 +2,9 @@
   <a href="https://mmp-y.com">
     <img src="https://mmp-y.com/owl.svg">
   </a>
+  <p align="center">
+    <span>mmp</span>
+  </p>
   <p align=center>
     <a href="https://www.python.org/downloads/release/python-3">
       <img src="https://img.shields.io/badge/python-3-blue.svg">
