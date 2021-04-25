@@ -3,7 +3,7 @@
     <img src="https://mmp-y.com/owl.svg">
   </a>
   <p align="center">
-    <span style="font-size: xxx-large">mmp</span>
+    <h1 align="center">mmp</h1>
   </p>
   <p align=center>
     <a href="https://www.python.org/downloads/release/python-3">
