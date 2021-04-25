@@ -2,8 +2,6 @@
   <a href="https://mmp-y.com">
     <img src="https://mmp-y.com/owl.svg">
   </a>
-  <h1 align="center">mmp</h1>
-
 </p>
 
 Module manager python  is a cli solution for an easier and faster way to handle you python modules
