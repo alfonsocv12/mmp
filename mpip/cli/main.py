@@ -71,6 +71,7 @@ class TopLevelCommand:
         -v, --version            Shows mpip version
 
     Commands:
+        run                      Run python files with the environment modules
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
         upgrade                  Upgrade module on the pip_modules
@@ -83,6 +84,21 @@ class TopLevelCommand:
         Constructor function
         '''
         self.toplevel_options = options or {}
+
+    def run(self, options=None):
+        '''
+        Run python files with the enviroment modules
+
+        usage: run [<file>]
+        '''
+        file = options.get('<file>', None)
+        if file:
+            os.system(f'pip_modules/bin/python {file}')
+            return
+        if not os.path.exists('run.py'):
+            bcolors.printColor('FAIL', 'Missing run.py or file parameter')
+            return
+        os.system('pip_modules/bin/python run.py')
 
     def install(self, options=None):
         '''
