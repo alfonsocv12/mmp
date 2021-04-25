@@ -2,7 +2,16 @@
   <a href="https://mmp-y.com">
     <img src="https://mmp-y.com/owl.svg">
   </a>
+  <p align=center>
+    <a href="https://www.python.org/downloads/release/python-3">
+      <img src="https://img.shields.io/badge/python-3-blue.svg">
+    </a>
+    <a href="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml">
+      <img src="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml/badge.svg">
+    </a>
+  </p>
 </p>
+
 
 Module manager python  is a cli solution for an easier and faster way to handle you python modules
 with your projects.
