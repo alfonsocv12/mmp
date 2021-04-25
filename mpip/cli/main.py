@@ -91,7 +91,7 @@ class TopLevelCommand:
             return
 
         bcolors.printColor('HEADER', 'Start install')
-        if not os.path.exists('pip_modules/'): self.__create_virtualenv()
+        self.__check_virtual_env()
         print('Running pip install')
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'missing requirements.txt')
@@ -114,19 +114,25 @@ class TopLevelCommand:
         usage: init
         '''
         bcolors.printColor('HEADER', 'Initializing mpip')
-        if not os.path.exists("pip_modules/"):
-            self.__create_virtualenv()
-        if not os.path.exists('requirements.txt'):
-            print('Creating requirements.txt')
-            open('requirements.txt', 'w').close()
+        self.__check_virtual_env()
+        self.__check_requirements()
         bcolors.printColor('OKGREEN', 'Finish init')
 
-    def __create_virtualenv(self):
+    def __check_virtual_env(self):
         '''
         Function dedicated to create a new virtual env with the name
         '''
-        print('Creating virtualenv')
-        os.system('virtualenv --python=python3 pip_modules')
+        if not os.path.exists("pip_modules/"):
+            print('Creating virtualenv')
+            os.system('virtualenv --python=python3 pip_modules')
+
+    def __check_requirements(self):
+        '''
+        Check requirements file if not create
+        '''
+        if not os.path.exists('requirements.txt'):
+            print('Creating requirements.txt')
+            open('requirements.txt', 'w').close()
 
     def __install_specifict_lib(self, command: str):
         '''
@@ -135,6 +141,8 @@ class TopLevelCommand:
 
         param: options (dict)
         '''
+        self.__check_virtual_env()
+        self.__check_requirements()
         lib: dict = {
             'name': command.split('=')[0],
         }
@@ -164,8 +172,11 @@ class TopLevelCommand:
         '''
         Function dedicated to check if lib allready in pip_modules
         '''
-        response: str = os.popen(f'pip_modules/bin/pip show {lib_name}').read()
-        if 'Name' in response.splitlines()[0]:
+        response = os.popen(
+            'pip_modules/bin/python -c "import sys\n'
+            'print(\'{lib_name}\' in sys.modules)"'
+        )
+        if 'True' in response.read().strip():
             return True
         return
 
