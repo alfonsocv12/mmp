@@ -1,6 +1,7 @@
 # mpip
 
 [![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/release/python-3)
+[![Upload Python Package](https://github.com/alfonsocv12/mpip/actions/workflows/python-publish.yml/badge.svg)](https://github.com/alfonsocv12/mpip/actions/workflows/python-publish.yml)
 
 This is a cli solution for an easier and faster way to handle you python modules
 with your projects.
