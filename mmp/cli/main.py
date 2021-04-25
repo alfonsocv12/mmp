@@ -43,7 +43,7 @@ def dispatch():
     dispatcher = DocoptDispatcher(
         TopLevelCommand, {
             'options_first': True,
-            'version': get_version_info('mpip')
+            'version': get_version_info('mmp')
         }
     )
     options, handler, command_options = dispatcher.parse(sys.argv[1:])
@@ -64,11 +64,11 @@ class TopLevelCommand:
     '''Install and handle your pip dependencies fast and easy
 
     usage:
-        mpip [options] [--] [COMMAND] [ARGS...]
-        mpip -h|--help
+        mmp [options] [--] [COMMAND] [ARGS...]
+        mmp -h|--help
 
     Options:
-        -v, --version            Shows mpip version
+        -v, --version            Shows mmp version
 
     Commands:
         run                      Run python files with the environment modules
@@ -116,24 +116,24 @@ class TopLevelCommand:
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'missing requirements.txt')
             print('\nSUGGESTION: This command could help')
-            print('  $ mpip init')
+            print('  $ mmp init')
             return
         os.system("./pip_modules/bin/pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
 
     def init(self, options=None):
         '''
-        Init the mpip environment
+        Init the mmp environment
 
         For example:
-            $ mpip init
+            $ mmp init
 
         By default, creates the virtualenv in pip_modules dir on the proyect
         and a requirements.txt without any line on the requirements file
 
         usage: init
         '''
-        bcolors.printColor('HEADER', 'Initializing mpip')
+        bcolors.printColor('HEADER', 'Initializing mmp')
         self.__check_virtual_env()
         self.__check_requirements()
         bcolors.printColor('OKGREEN', 'Finish init')
@@ -143,7 +143,7 @@ class TopLevelCommand:
         Uninstall a lib from the pip_modules
 
         For example:
-            $ mpip uninstall mpip
+            $ mmp uninstall mmp
 
         usage: uninstall [COMMAND]
         '''

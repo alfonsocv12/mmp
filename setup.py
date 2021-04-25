@@ -2,25 +2,24 @@ import os
 import sys
 import json
 
-from mpip.cli.colors import bcolors
-# from setuptools.command.install import install
+from mmp.cli.colors import bcolors
 from setuptools import find_packages
 from setuptools import setup
 
 
 setup(
-    name='mpip',
+    name='mmp',
     version='0.0.1',
     authro='Alfonso Villaobos',
     author_email='alfonso@codepeat.com',
-    url='https://github.com/alfonsocv12/mpip',
+    url='https://github.com/alfonsocv12/mmp',
     license='MIT',
-    description='mpip gives a faster way to handle pip librarys with a projects scope',
+    description='MMP gives a faster way to handle pip librarys with a projects scope',
     packages=find_packages(exclude=['tests.*', 'tests']),
     long_description=open('readme.md', 'r').read(),
     long_description_content_type='text/markdown',
     entry_points={
-        'console_scripts': ['mpip=mpip.cli.main:main']
+        'console_scripts': ['mmp=mmp.cli.main:main']
     },
     install_requires=[
         'virtualenv>=20.4.4',

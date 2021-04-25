@@ -1,10 +1,10 @@
 import os
-import mpip
+import mmp
 
 def get_version_info(scope):
-    versioninfo = 'mpip version {}'.format(mpip.__version__)
+    versioninfo = 'mmp version {}'.format(mmp.__version__)
 
-    if scope == 'mpip':
+    if scope == 'mmp':
         return versioninfo
 
     raise ValueError("{} is not a valid version scope".format(scope))
