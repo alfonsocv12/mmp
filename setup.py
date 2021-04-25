@@ -27,6 +27,7 @@ setup(
         'docopt==0.6.2'
     ],
     classifiers=[
+        "Development status :: 1 - Alpha",
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
