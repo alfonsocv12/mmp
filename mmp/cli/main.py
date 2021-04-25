@@ -217,7 +217,7 @@ class TopLevelCommand:
         self.__check_virtual_env()
         self.__check_requirements()
         lib: dict = {
-            'name': command.split('=')[0],
+            'name': command.rstrip('\x00').split('=')[0],
         }
         if self.__check_lib_installed(lib['name']):
             bcolors.printColor('WARNING', f'{lib["name"]} allready satisfied')
