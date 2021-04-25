@@ -17,7 +17,7 @@ setup(
     license='MIT',
     description='mpip gives a faster way to handle pip librarys with a projects scope',
     packages=find_packages(exclude=['tests.*', 'tests']),
-    long_description=open('README.md', 'r').read(),
+    long_description=open('readme.md', 'r').read(),
     long_description_content_type='text/markdown',
     entry_points={
         'console_scripts': ['mpip=mpip.cli.main:main']

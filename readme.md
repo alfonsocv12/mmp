@@ -21,3 +21,27 @@ your default python version.
 ```bash
 $ pip3 install mpip
 ```
+
+After you install the program, go to the proyect that you want to use mpip and
+start installing dependencies with this simple command
+
+```bash
+$ mpip install [module_name]
+```
+
+To run your project/script its ass simple to use the run command, this command defaults
+to a run.py file but you can specify the file that you want to run by adding the file
+full name at the end like this
+
+```bash
+$ mpip run my_perfect_script.py
+```
+
+In the case that you want to know a little more off the commands that you can run
+with the program just ask for help with the -h on every section of the program for
+example.
+
+```bash
+$ mpip -h
+$ mpip run -h
+```
