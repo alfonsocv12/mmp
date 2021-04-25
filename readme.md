@@ -1,19 +1,40 @@
-# mmp
+<p align="center">
+  <a href="https://mmp-y.com">
+    <img src="https://mmp-y.com/owl.svg">
+  </a>
+  <p align="center">
+    <h1 align="center">mmp</h1>
+  </p>
+  <p align=center>
+    <a href="https://www.python.org/downloads/release/python-3">
+      <img src="https://img.shields.io/badge/python-3-blue.svg">
+    </a>
+    <a href="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml">
+      <img src="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml/badge.svg">
+    </a>
+  </p>
+</p>
 
-[![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/release/python-3)
-[![Upload Python Package](https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml/badge.svg)](https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml)
 
 Module manager python  is a cli solution for an easier and faster way to handle you python modules
 with your projects.
 
-I know that the name its wrong but mmp was taken by the time that i build this
-solution.
+---
+
+### Documentation [page](https://mmp-y.com)
+### Update docs [here](https://github.com/alfonsocv12/mmpDocs)
+### Source code [git repo](https://github.com/alfonsocv12/mmp)
+
+---
 
 ## Inspiration
 
 The inspiration and the goal to deliver its a similar way of handling node modules
 but off course not losing the simplicity of the python programing language, taking
 into consideration the difference in use cases between both programming languages.
+
+I know that the name its wrong but mmp was taken by the time that i build this
+solution.
 
 ## Quickstart
 
