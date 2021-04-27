@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://mmp-y.com">
-    <img src="https://mmp-y.com/owl.svg">
+  <a href="https://mmp.alfonsocvu.me">
+    <img src="https://mmp.alfonsocvu.me/owl.svg">
   </a>
   <p align="center">
     <h1 align="center">mmp</h1>
@@ -21,7 +21,7 @@ with your projects.
 
 ---
 
-### Documentation [page](https://mmp-y.com)
+### Documentation [page](https://mmp.alfonsocvu.me)
 ### Update docs [here](https://github.com/alfonsocv12/mmpDocs)
 ### Source code [git repo](https://github.com/alfonsocv12/mmp)
 
