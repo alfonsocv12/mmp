@@ -19,8 +19,7 @@
 </p>
 
 
-Module manager python  is a cli solution for an easier and faster way to handle you python modules
-with your projects.
+Module manager python  is a cli solution for an easier and faster way to handle you python modules.
 
 ---
 
