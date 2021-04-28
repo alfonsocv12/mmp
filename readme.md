@@ -23,9 +23,9 @@ Module manager python  is a cli solution for an easier and faster way to handle 
 
 ---
 
-### Documentation [page](https://mmp.alfonsocvu.me)
-### Update docs [here](https://github.com/alfonsocv12/mmpDocs)
-### Source code [git repo](https://github.com/alfonsocv12/mmp)
+### [Documentation page](https://mmp.alfonsocvu.me)
+### [Update docs here](https://github.com/alfonsocv12/mmpDocs)
+### [Source code git repo](https://github.com/alfonsocv12/mmp)
 
 ---
 
