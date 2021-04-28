@@ -38,35 +38,48 @@ solution.
 
 ## Quickstart
 
-To start using PyMm, first install the program, at this early stages we just have
-the installation by pip so its required for you to have that also the app just works
-with python 3 and up so you need to use pip3 in the case that you have python 2 as
-your default python version.
+### Installation
+
+#### Requirements
+
+Python 3.6+
+
+* [virtualenv](https://virtualenv.pypa.io/en/latest/) for the envs
+* [docopt](http://docopt.org/) for command handling and docs
+
+To install mmp:
 
 ```bash
 $ pip3 install mmp
 ```
 
-After you install the program, go to the proyect that you want to use mmp and
-start installing dependencies with this simple command
+### First commands
+
+For installing modules into your project
 
 ```bash
 $ mmp install [module_name]
 ```
 
-To run your project/script its ass simple to use the run command, this command defaults
-to a run.py file but you can specify the file that you want to run by adding the file
-full name at the end like this
+This is how you run your scripts.
 
 ```bash
 $ mmp run my_perfect_script.py
 ```
 
-In the case that you want to know a little more off the commands that you can run
-with the program just ask for help with the -h on every section of the program for
-example.
+**by the way** if your script file name is run.py run this instead.
+
+```bash
+$ mmp run
+```
+
+### Help
+
+If you need help, just add -h to whatever you want to know about
 
 ```bash
 $ mmp -h
 $ mmp run -h
 ```
+
+[The docs are here if you have some more problems with the library](https://mmp.alfonsocvu.me/)
