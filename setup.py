@@ -14,7 +14,7 @@ setup(
     author_email='alfonso@codepeat.com',
     url='https://github.com/alfonsocv12/mmp',
     license='MIT',
-    description='MMP handle your py_modules easier and faster',
+    description='mmp handle your py_modules easier and faster',
     packages=find_packages(exclude=['tests.*', 'tests']),
     long_description=open('readme.md', 'r').read(),
     long_description_content_type='text/markdown',

@@ -12,6 +12,9 @@
     <a href="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml">
       <img src="https://github.com/alfonsocv12/mmp/actions/workflows/python-publish.yml/badge.svg">
     </a>
+    <a href="https://pypi.org/project/mmp/">
+      <img src="https://img.shields.io/pypi/dm/mmp">
+    </a>
   </p>
 </p>
 
@@ -40,7 +43,7 @@ solution.
 
 ### Installation
 
-#### Requirements
+##### Requirements
 
 Python 3.6+
 
