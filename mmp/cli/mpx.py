@@ -11,14 +11,12 @@ from .colors import bcolors
 from .docopt_command import DocoptDispatcher
 from .docopt_command import get_handler
 from .docopt_command import NoSuchCommand
-from .run_scripts import RunScripts
 from .formatter import ConsoleWarningFormatter
 from .utils import get_version_info
 
 
 log = logging.getLogger(__name__)
 console_handler = logging.StreamHandler(sys.stderr)
-sys.path.insert(1, '.')
 
 
 def main():
@@ -29,21 +27,17 @@ def main():
         print("Aborting.")
         sys.exit(1)
     except NoSuchCommand as e:
-        pass_to_script()
+        pass_to_scripts()
     except Exception as e:
         print(str(e))
 
-
-def pass_to_script():
+def pass_to_scripts():
     '''
     Function dedicated to pass commands to the virtualenviroment
     '''
-    script: list = sys.argv[1:]
-    try:
-        RunScripts.get_run_script_value(script)
-    except Exception as e:
-        print(str(e))
-
+    lib_command: str = ' '.join(sys.argv[1:])
+    os.system(f'pip_modules/bin/{lib_command}')
+    return
 
 def dispatch():
     dispatcher = DocoptDispatcher(
