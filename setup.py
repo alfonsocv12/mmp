@@ -19,7 +19,10 @@ setup(
     long_description=open('readme.md', 'r').read(),
     long_description_content_type='text/markdown',
     entry_points={
-        'console_scripts': ['mmp=mmp.cli.main:main']
+        'console_scripts': [
+            'mmp=mmp.cli.main:main',
+            'mex=mmp.cli.mex:main'
+        ]
     },
     install_requires=[
         'virtualenv>=20.4.4',
