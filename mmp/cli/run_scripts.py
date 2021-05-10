@@ -15,6 +15,8 @@ class RunScripts:
         '''
         try:
             import run as run_file
+        except ImportError as e:
+            raise Exception(f'Error on run.py: {str(e)}')
         except:
             raise MissingFiles('run.py')
 
