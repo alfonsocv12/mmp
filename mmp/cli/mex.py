@@ -78,21 +78,13 @@ class TopLevelCommand:
         '''
         lib_command: str = ' '.join(sys.argv[1:])
         try:
-            TopLevelCommand.check_cmmd_exist(sys.argv[1])
+            if not os.path.isfile(f'pip_modules/bin/{command_name}'):
+                raise NoSuchCommand(command_name, 'aol')
+
             os.system(f'pip_modules/bin/{lib_command}')
         except Exception as e:
             print(str(e))
         return
-    
-    @staticmethod
-    def check_cmmd_exist(command_name: str):
-        '''
-        Check if the command exist before trying the hole command
-
-        param: command name
-        '''
-        if not os.path.isfile(f'pip_modules/bin/{command_name}'):
-            raise NoSuchCommand(command_name, 'aol')
 
     @classmethod
     def help(cls, options):
