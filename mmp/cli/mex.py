@@ -76,12 +76,13 @@ class TopLevelCommand:
         '''
         Function dedicated to pass commands to the virtualenviroment
         '''
-        lib_command: str = ' '.join(sys.argv[1:])
+        command_to_find: str = sys.argv[1]
+        full_command: str = ' '.join(sys.argv[1:])
         try:
-            if not os.path.isfile(f'pip_modules/bin/{command_name}'):
-                raise NoSuchCommand(command_name, 'aol')
+            if not os.path.isfile(f'pip_modules/bin/{command_to_find}'):
+                raise NoSuchCommand(command_to_find, 'aol')
 
-            os.system(f'pip_modules/bin/{lib_command}')
+            os.system(f'pip_modules/bin/{full_command}')
         except Exception as e:
             print(str(e))
         return
