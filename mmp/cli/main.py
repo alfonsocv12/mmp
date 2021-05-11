@@ -238,6 +238,7 @@ class TopLevelCommand:
         '''
         Function dedicated to update requirements.txt with the new lib
         '''
+        name = name.lower().strip(' ')
         requirements = open('requirements.txt', 'r+')
         requirements_read: list = requirements.readlines()
         if remove:
@@ -250,8 +251,9 @@ class TopLevelCommand:
                     f'{name}=={version}\n'
                 )
         requirements_write = ''.join(sorted(requirements_read))
-        requirements.truncate(0)
+        requirements.seek(0)
         requirements.write(requirements_write)
+        requirements.truncate()
         requirements.close()
 
     def __check_lib_installed(self, lib_name: str):
