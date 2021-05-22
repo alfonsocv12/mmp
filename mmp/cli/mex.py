@@ -48,7 +48,6 @@ def perform_command(options, handler, command_options):
         return
 
     command = TopLevelCommand(options=options)
-    # with errors.handle_connection_errors(project.client):
     handler(command, command_options)
 
 
