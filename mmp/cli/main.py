@@ -140,6 +140,7 @@ class TopLevelCommand:
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
         self.__check_virtual_env()
+        self.__create_git()
         self.__check_requirements()
         bcolors.printColor('OKGREEN', 'Finish init')
 
@@ -184,6 +185,19 @@ class TopLevelCommand:
             return
         module_name = options.get('COMMAND')
         os.system(f'pip_modules/bin/pip install --upgrade {module_name}')
+    
+    def __create_git(self) -> None:
+        '''
+        Function dedicated to create git i
+        '''
+        if os.popen("command -v git").read() != ''\
+            and os.popen("[ -f ./.git ] && echo \"true\"") != '':
+            os.system("git init")
+        
+            if os.popen("[ -f ./.gitignore ] && echo \"true\"") != '':
+                file = open('.gitignore', 'w+')
+                file.write("*.DS_Store\n.vscode/\n\n*.pyc\n\npip_modules/")
+
 
     def __uninstall_pip_module(self, module_name: str):
         '''
