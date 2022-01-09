@@ -77,6 +77,7 @@ class TopLevelCommand:
 
     Commands:
         run                      Run python files with the environment modules
+        ls                       list installed packages
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
         upgrade                  Upgrade module on the pip_modules
@@ -104,6 +105,20 @@ class TopLevelCommand:
             bcolors.printColor('FAIL', 'Missing run.py or file parameter')
             return
         os.system('pip_modules/bin/python run.py')
+    
+    def ls(self, options=None):
+        '''
+        List modules on project.
+        
+        Options:
+            -a                   List all the modules with their dependencies
+        
+        usage: ls [options]
+        '''
+        if options.get('-a'):
+            os.system('./pip_modules/bin/pip list')
+        else:
+            os.system(f'cat ./requirements.txt')
 
     def install(self, options=None):
         '''
