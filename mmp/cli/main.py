@@ -11,12 +11,14 @@ from .colors import bcolors
 from .docopt_command import DocoptDispatcher
 from .docopt_command import get_handler
 from .docopt_command import NoSuchCommand
+from .run_scripts import RunScripts
 from .formatter import ConsoleWarningFormatter
 from .utils import get_version_info
 
 
 log = logging.getLogger(__name__)
 console_handler = logging.StreamHandler(sys.stderr)
+sys.path.insert(1, '.')
 
 
 def main():
@@ -27,17 +29,21 @@ def main():
         print("Aborting.")
         sys.exit(1)
     except NoSuchCommand as e:
-        pass_to_lib()
+        pass_to_script()
     except Exception as e:
         print(str(e))
 
-def pass_to_lib():
+
+def pass_to_script():
     '''
     Function dedicated to pass commands to the virtualenviroment
     '''
-    lib_command: str = ' '.join(sys.argv[1:])
-    os.system(f'pip_modules/bin/{lib_command}')
-    return
+    script: list = sys.argv[1:]
+    try:
+        RunScripts.get_run_script_value(script)
+    except Exception as e:
+        print(str(e))
+
 
 def dispatch():
     dispatcher = DocoptDispatcher(
@@ -56,7 +62,6 @@ def perform_command(options, handler, command_options):
         return
 
     command = TopLevelCommand(options=options)
-    # with errors.handle_connection_errors(project.client):
     handler(command, command_options)
 
 
@@ -72,6 +77,7 @@ class TopLevelCommand:
 
     Commands:
         run                      Run python files with the environment modules
+        ls                       list installed packages
         install                  Install your libraries on pip_modules
         init                     Create requirements.txt to to add python libraries
         upgrade                  Upgrade module on the pip_modules
@@ -99,6 +105,20 @@ class TopLevelCommand:
             bcolors.printColor('FAIL', 'Missing run.py or file parameter')
             return
         os.system('pip_modules/bin/python run.py')
+    
+    def ls(self, options=None):
+        '''
+        List modules on project.
+        
+        Options:
+            -a                   List all the modules with their dependencies
+        
+        usage: ls [options]
+        '''
+        if options.get('-a'):
+            os.system('./pip_modules/bin/pip list')
+        else:
+            os.system(f'cat ./requirements.txt')
 
     def install(self, options=None):
         '''
@@ -135,6 +155,7 @@ class TopLevelCommand:
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
         self.__check_virtual_env()
+        self.__create_git()
         self.__check_requirements()
         bcolors.printColor('OKGREEN', 'Finish init')
 
@@ -179,6 +200,19 @@ class TopLevelCommand:
             return
         module_name = options.get('COMMAND')
         os.system(f'pip_modules/bin/pip install --upgrade {module_name}')
+    
+    def __create_git(self) -> None:
+        '''
+        Function dedicated to create git i
+        '''
+        if os.popen("command -v git").read() != ''\
+            and os.popen("[ -f ./.git ] && echo \"true\"") != '':
+            os.system("git init")
+        
+            if os.popen("[ -f ./.gitignore ] && echo \"true\"") != '':
+                file = open('.gitignore', 'w+')
+                file.write("*.DS_Store\n.vscode/\n\n*.pyc\n\npip_modules/")
+
 
     def __uninstall_pip_module(self, module_name: str):
         '''
