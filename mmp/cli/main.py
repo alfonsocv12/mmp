@@ -1,6 +1,4 @@
 import functools
-import json
-import re
 import os
 import logging
 import sys
@@ -12,7 +10,6 @@ from .docopt_command import DocoptDispatcher
 from .docopt_command import get_handler
 from .docopt_command import NoSuchCommand
 from .run_scripts import RunScripts
-from .formatter import ConsoleWarningFormatter
 from .utils import get_version_info
 
 
@@ -97,6 +94,10 @@ class TopLevelCommand:
 
         usage: run [<file>]
         '''
+        if self.__get_docker_status():
+            bcolors.printColor('FAIL', 'You are on a container, this is not necessary to run a file')
+            return
+
         file = options.get('<file>', None)
         if file:
             os.system(f'pip_modules/bin/python {file}')
@@ -105,20 +106,22 @@ class TopLevelCommand:
             bcolors.printColor('FAIL', 'Missing run.py or file parameter')
             return
         os.system('pip_modules/bin/python run.py')
-    
+
     def ls(self, options=None):
         '''
         List modules on project.
-        
+
         Options:
             -a                   List all the modules with their dependencies
-        
+
         usage: ls [options]
         '''
+        prefix = self.__get_prefix_by_docker_status()
+
         if options.get('-a'):
-            os.system('./pip_modules/bin/pip list')
+            os.system(f'{prefix}pip list')
         else:
-            os.system(f'cat ./requirements.txt')
+            os.system('cat ./requirements.txt')
 
     def install(self, options=None):
         '''
@@ -126,24 +129,33 @@ class TopLevelCommand:
 
         Usage: install [options] [COMMAND]
         '''
+        prefix = self.__get_prefix_by_docker_status()
+
         if options.get('COMMAND', None):
-            self.__install_specifict_lib(options.get('COMMAND'))
+            self.__install_specifict_lib(prefix, options.get('COMMAND'))
             return
 
         bcolors.printColor('HEADER', 'Start install')
-        self.__check_virtual_env()
+
+        if prefix != '':
+            self.__check_virtual_env()
+
         print('Running pip install')
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'missing requirements.txt')
             print('\nSUGGESTION: This command could help')
             print('  $ mmp init')
             return
-        os.system("./pip_modules/bin/pip install -r requirements.txt")
+
+        os.system(f"{prefix}pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
 
     def init(self, options=None):
         '''
         Init the mmp environment
+
+        Options:
+            -d, --docker          On Containers, use this flag to avoid the virtualenv
 
         For example:
             $ mmp init
@@ -151,12 +163,20 @@ class TopLevelCommand:
         By default, creates the virtualenv in pip_modules dir on the proyect
         and a requirements.txt without any line on the requirements file
 
-        usage: init
+
+        usage: init [options]
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
-        self.__check_virtual_env()
-        self.__create_git()
+
+        if options.get('--docker'):
+            self.__safe_docker_init()
+
+        if not self.__get_docker_status():
+            self.__check_virtual_env()
+            self.__create_git()
+
         self.__check_requirements()
+
         bcolors.printColor('OKGREEN', 'Finish init')
 
     def uninstall(self, options=None):
@@ -171,7 +191,17 @@ class TopLevelCommand:
         if not options.get('COMMAND', None):
             bcolors.printColor('FAIL', 'You need to send the module name')
             return
-        self.__uninstall_pip_module(options.get('COMMAND'))
+
+        prefix = self.__get_prefix_by_docker_status()
+        module_name = options.get('COMMAND')
+
+        if prefix != '' and not os.path.exists("pip_modules/"):
+            bcolors.printColor('FAIL', 'Can\'t remove module')
+            return
+
+        os.system(f'{prefix}pip uninstall {module_name}')
+
+        self.__update_requirements(module_name, remove=True)
 
     def clean(self, options=None):
         '''
@@ -179,12 +209,18 @@ class TopLevelCommand:
 
         usage: clean
         '''
+        if self.__get_docker_status():
+            bcolors.printColor('FAIL', 'You are on a container, you can\'t clean')
+            return
+
         if not os.path.exists('pip_modules'):
             bcolors.printColor('FAIL', 'No pip_modules')
             return
+
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'No requirements.txt')
             return
+
         os.system('rm -rf pip_modules')
         self.__check_virtual_env()
         os.system('pip_modules/bin/pip install -r requirements.txt')
@@ -198,32 +234,22 @@ class TopLevelCommand:
         if not options.get('COMMAND', None):
             bcolors.printColor('FAIL', 'Missing module to upgrade')
             return
+
+        prefix = self.__get_prefix_by_docker_status()
+
         module_name = options.get('COMMAND')
-        os.system(f'pip_modules/bin/pip install --upgrade {module_name}')
-    
+        os.system(f'{prefix}pip install --upgrade {module_name}')
+
     def __create_git(self) -> None:
         '''
         Function dedicated to create git i
         '''
-        if os.popen("command -v git").read() != ''\
-            and os.popen("[ -f ./.git ] && echo \"true\"") != '':
+        if (os.popen("command -v git").read() != '' and os.popen("[ -f ./.git ] && echo \"true\"") != ''):
             os.system("git init")
-        
+
             if os.popen("[ -f ./.gitignore ] && echo \"true\"") != '':
                 file = open('.gitignore', 'w+')
                 file.write("*.DS_Store\n.vscode/\n\n*.pyc\n\npip_modules/")
-
-
-    def __uninstall_pip_module(self, module_name: str):
-        '''
-        This function deletes the module from pip_modules and remove it from
-        requirements
-        '''
-        if not os.path.exists("pip_modules/"):
-            bcolors.printColor('FAIL', 'Can\'t remove module')
-            return
-        os.system(f'pip_modules/bin/pip uninstall {module_name}')
-        self.__update_requirements(module_name, remove=True)
 
     def __check_virtual_env(self):
         '''
@@ -241,24 +267,30 @@ class TopLevelCommand:
             print('Creating requirements.txt')
             open('requirements.txt', 'w').close()
 
-    def __install_specifict_lib(self, command: str):
+    def __install_specifict_lib(self, prefix, command: str):
         '''
         Here we pass a install command to pip to install a librari into our
         pip_modules and adding it into our requirements.txt
 
         param: options (dict)
         '''
-        self.__check_virtual_env()
+        if prefix != '':
+            self.__check_virtual_env()
+
         self.__check_requirements()
+
         lib: dict = {
             'name': command.rstrip('\x00').split('=')[0],
         }
+
         v_installed = self.__check_lib_installed(lib['name'])
         if v_installed:
             bcolors.printColor('WARNING', f'{v_installed} allready satisfied')
             return
-        os.system(f'pip_modules/bin/pip install {command}')
-        show_result = os.popen(f'pip_modules/bin/pip show {lib["name"]}').read()
+
+        os.system(f'{prefix}pip install {command}')
+        show_result = os.popen(f'{prefix}pip show {lib["name"]}').read()
+
         lib['version'] = show_result.splitlines()[1].split(':')[1].strip(' ')
         self.__update_requirements(lib['name'], lib['version'])
 
@@ -274,7 +306,7 @@ class TopLevelCommand:
                 if name in s:
                     del requirements_read[i]
         else:
-            if not name in requirements_read:
+            if name not in requirements_read:
                 requirements_read.append(
                     f'{name}=={version}\n'
                 )
@@ -304,6 +336,20 @@ class TopLevelCommand:
         if 'False' in response_str:
             return
         return response_str.rstrip('\n')
+
+    def __get_docker_status(self):
+        with open('/.mmpConfig', 'r') as file:
+            text = file.read()
+            if 'docker=true' in text:
+                return True
+        return False
+
+    def __get_prefix_by_docker_status(self):
+        return '' if self.__get_docker_status() else './pip_modules/bin/'
+
+    def __safe_docker_init(self):
+        with open('/.mmpConfig', 'w') as file:
+            file.write('docker=true\n')
 
     @classmethod
     def help(cls, options):

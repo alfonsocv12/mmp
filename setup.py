@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='mmp',
-    version='0.1.0',
+    version='0.2.0',
     author='Alfonso Villaobos',
     author_email='alfonso@codepeat.com',
     url='https://github.com/alfonsocv12/mmp',
