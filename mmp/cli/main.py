@@ -94,6 +94,10 @@ class TopLevelCommand:
 
         usage: run [<file>]
         '''
+        if self.__get_docker_status():
+            bcolors.printColor('FAIL', 'You are on a container, this is not necessary to run a file')
+            return
+
         file = options.get('<file>', None)
         if file:
             os.system(f'pip_modules/bin/python {file}')
@@ -163,11 +167,12 @@ class TopLevelCommand:
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
 
-        if not options.get('--docker') and not self.__get_docker_status():
+        if options.get('--docker'):
+            self.__safe_docker_init()
+
+        if not self.__get_docker_status():
             self.__check_virtual_env()
             self.__create_git()
-        else:
-            self.__safe_docker_init()
 
         self.__check_requirements()
 
