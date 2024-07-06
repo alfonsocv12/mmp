@@ -1,22 +1,16 @@
-import os
-import sys
-import json
-
-from mmp.cli.colors import bcolors
 from setuptools import find_packages
 from setuptools import setup
 
-
 setup(
     name='mmp',
-    version='0.2.0',
+    version='0.2.1',
     author='Alfonso Villaobos',
     author_email='alfonso@codepeat.com',
     url='https://github.com/alfonsocv12/mmp',
     license='MIT',
     description='mmp handle your py_modules easier and faster',
     packages=find_packages(exclude=['tests.*', 'tests']),
-    long_description=open('readme.md', 'r').read(),
+    long_description=open('readme.md').read(),
     long_description_content_type='text/markdown',
     entry_points={
         'console_scripts': [
