@@ -2,7 +2,6 @@ import functools
 import os
 import logging
 import sys
-import subprocess
 from inspect import getdoc
 
 from . import signals
@@ -113,8 +112,10 @@ class TopLevelCommand:
 
         usage: ls [options]
         '''
+        prefix = self.__get_prefix_by_docker_status()
+
         if options.get('-a'):
-            os.system('./pip_modules/bin/pip list')
+            os.system(f'{prefix}pip list')
         else:
             os.system('cat ./requirements.txt')
 
@@ -124,19 +125,25 @@ class TopLevelCommand:
 
         Usage: install [options] [COMMAND]
         '''
+        prefix = self.__get_prefix_by_docker_status()
+
         if options.get('COMMAND', None):
-            self.__install_specifict_lib(options.get('COMMAND'))
+            self.__install_specifict_lib(prefix, options.get('COMMAND'))
             return
 
         bcolors.printColor('HEADER', 'Start install')
-        self.__check_virtual_env()
+
+        if prefix != '':
+            self.__check_virtual_env()
+
         print('Running pip install')
         if not os.path.exists('requirements.txt'):
             bcolors.printColor('FAIL', 'missing requirements.txt')
             print('\nSUGGESTION: This command could help')
             print('  $ mmp init')
             return
-        os.system("./pip_modules/bin/pip install -r requirements.txt")
+
+        os.system(f"{prefix}pip install -r requirements.txt")
         bcolors.printColor('OKGREEN', 'Finish installation')
 
     def init(self, options=None):
@@ -156,7 +163,7 @@ class TopLevelCommand:
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
 
-        if not options.get('--docker'):
+        if not options.get('--docker') and not self.__get_docker_status():
             self.__check_virtual_env()
             self.__create_git()
         else:
@@ -179,15 +186,12 @@ class TopLevelCommand:
             bcolors.printColor('FAIL', 'You need to send the module name')
             return
 
+        prefix = self.__get_prefix_by_docker_status()
         module_name = options.get('COMMAND')
 
-        prefix = ''
-        if not self.__get_docker_status():
-            if not os.path.exists("pip_modules/"):
-                bcolors.printColor('FAIL', 'Can\'t remove module')
-                return
-
-            prefix = 'pip_modules/bin/'
+        if prefix != '' and not os.path.exists("pip_modules/"):
+            bcolors.printColor('FAIL', 'Can\'t remove module')
+            return
 
         os.system(f'{prefix}pip uninstall {module_name}')
 
@@ -224,8 +228,11 @@ class TopLevelCommand:
         if not options.get('COMMAND', None):
             bcolors.printColor('FAIL', 'Missing module to upgrade')
             return
+
+        prefix = self.__get_prefix_by_docker_status()
+
         module_name = options.get('COMMAND')
-        os.system(f'pip_modules/bin/pip install --upgrade {module_name}')
+        os.system(f'{prefix}pip install --upgrade {module_name}')
 
     def __create_git(self) -> None:
         '''
@@ -254,15 +261,13 @@ class TopLevelCommand:
             print('Creating requirements.txt')
             open('requirements.txt', 'w').close()
 
-    def __install_specifict_lib(self, command: str):
+    def __install_specifict_lib(self, prefix, command: str):
         '''
         Here we pass a install command to pip to install a librari into our
         pip_modules and adding it into our requirements.txt
 
         param: options (dict)
         '''
-        prefix = self.__get_prefix_by_docker_status()
-
         if prefix != '':
             self.__check_virtual_env()
 
@@ -295,7 +300,7 @@ class TopLevelCommand:
                 if name in s:
                     del requirements_read[i]
         else:
-            if not name in requirements_read:
+            if name not in requirements_read:
                 requirements_read.append(
                     f'{name}=={version}\n'
                 )
@@ -334,7 +339,7 @@ class TopLevelCommand:
         return False
 
     def __get_prefix_by_docker_status(self):
-        return '' if self.__get_docker_status() else 'pip_modules/bin/'
+        return '' if self.__get_docker_status() else './pip_modules/bin/'
 
     def __safe_docker_init(self):
         with open('/.mmpConfig', 'w') as file:
