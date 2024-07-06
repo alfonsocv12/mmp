@@ -154,16 +154,17 @@ class TopLevelCommand:
         '''
         Init the mmp environment
 
+        Options:
+            -d, --docker          On Containers, use this flag to avoid the virtualenv
+
         For example:
             $ mmp init
 
         By default, creates the virtualenv in pip_modules dir on the proyect
         and a requirements.txt without any line on the requirements file
 
-        options:
-            -d, --docker          On Containers, use this flag to avoid the virtualenv
 
-        usage: init
+        usage: init [options]
         '''
         bcolors.printColor('HEADER', 'Initializing mmp')
 
